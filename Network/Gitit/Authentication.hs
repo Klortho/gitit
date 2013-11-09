@@ -374,7 +374,7 @@ loginUser params = do
   if allowed
     then do
       key <- newSession (SessionData uname)
-      addCookie (MaxAge $ sessionTimeout cfg) (mkCookie "sid" (show key))
+      addCookie (MaxAge $ sessionTimeout cfg) (mkCookie (sessionCookieName cfg) (show key))
       seeOther (encUrl destination) $ toResponse $ p << ("Welcome, " ++ uname)
     else
       withMessages ["Invalid username or password."] loginUserForm
@@ -391,7 +391,7 @@ logoutUser params = do
   case key of
        Just k  -> do
          delSession k
-         expireCookie "sid"
+         expireCookie "foo"
        Nothing -> return ()
   seeOther (encUrl dest) $ toResponse "You have been logged out."
 
@@ -466,7 +466,7 @@ loginRPXUser params = do
        user <- liftIO $ mkUser (fromMaybe userId email) (fromMaybe "" email) "none"
        updateGititState $ \s -> s { users = M.insert userId user (users s) }
        key <- newSession (SessionData userId)
-       addCookie (MaxAge $ sessionTimeout cfg) (mkCookie "sid" (show key))
+       addCookie (MaxAge $ sessionTimeout cfg) (mkCookie (sessionCookieName cfg) (show key))
        see $ fromJust $ rDestination params
       where
         prop pname info = lookup pname $ R.userData info

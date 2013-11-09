@@ -73,6 +73,8 @@ data Config = Config {
   userFile             :: FilePath,
   -- | Seconds of inactivity before session expires
   sessionTimeout       :: Int,
+  -- | Name of the cookie to use to store the session
+  sessionCookieName    :: String,
   -- | Directory containing page templates
   templatesDir         :: FilePath,
   -- | Path of server log file
@@ -257,7 +259,7 @@ data Recaptcha = Recaptcha {
   } deriving (Read, Show)
 
 instance FromData SessionKey where
-     fromData = readCookieValue "sid"
+     fromData = readCookieValue "foo"
 
 data Params = Params { pUsername     :: String
                      , pPassword     :: String
@@ -337,7 +339,7 @@ instance FromData Params where
                              Nothing      -> ("","")
          ac <- look' "accessCode"     `mplus` return ""
          cn <- (look' "confirm" >> return True) `mplus` return False
-         sk <- liftM Just (readCookieValue "sid") `mplus` return Nothing
+         sk <- liftM Just (readCookieValue "foo") `mplus` return Nothing
          rc <- look' "recaptcha_challenge_field" `mplus` return ""
          rr <- look' "recaptcha_response_field" `mplus` return ""
          rk <- look' "reset_code" `mplus` return ""

@@ -72,6 +72,7 @@ extractConfig cp = do
       cfAuthenticationMethod <- get cp "DEFAULT" "authentication-method"
       cfUserFile <- get cp "DEFAULT" "user-file"
       cfSessionTimeout <- get cp "DEFAULT" "session-timeout"
+      cfSessionCookieName <- get cp "DEFAULT" "session-cookie-name"
       cfTemplatesDir <- get cp "DEFAULT" "templates-dir"
       cfLogFile <- get cp "DEFAULT" "log-file"
       cfLogLevel <- get cp "DEFAULT" "log-level"
@@ -156,6 +157,7 @@ extractConfig cp = do
                                       _          -> mzero
         , userFile             = cfUserFile
         , sessionTimeout       = readNumber "session-timeout" cfSessionTimeout * 60  -- convert minutes -> seconds
+        , sessionCookieName    = cfSessionCookieName
         , templatesDir         = cfTemplatesDir
         , logFile              = cfLogFile
         , logLevel             = let levelString = map toUpper cfLogLevel
